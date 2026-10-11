@@ -29,13 +29,12 @@
 
 > 对谈原话（约 00:01:57）：饭前饭后拍照、训练录视频、睡眠数据，全部交给 AI，每天出一份报告。**资料都存成文件，换工具也不丢。**
 
-**实现方法**：利用豆包的跨平台对话能力（手机 / 电脑 / 网页）负责记录与分析，飞书云盘负责沉淀，构建个人 AI 数据库。数据入口分三条路径：
+**实现方法**：利用豆包的跨平台对话能力（手机 / 电脑 / 网页）负责记录与分析，飞书云盘负责沉淀，构建个人 AI 数据库。数据入口分两条路径：
 
 ```
                     ┌──────────── 豆包（跨平台对话）────────────┐
  路径A 拍照饮食 ────►│  手机端：拍照识别 / 上传文件 / 随时提问     │
- 路径B 健康自动导入 ►│  电脑端：批量解析（parse_healthexport.py） │
- 路径C 无电脑上传 ───►│  统一分析 → 生成日报 → 存入飞书云盘       │
+ 路径B 健康数据导入 ►│  电脑自动解析 / 手机手动发送 → 同步飞书云盘  │
                     └──────────────────┬───────────────────────┘
                                        ▼
                     飞书云盘「个人 AI 数据库」
@@ -45,31 +44,21 @@
 ```
 
 - **路径 A 饮食**：豆包 App 拍照识别食物 → 记录存入飞书云盘素材
-- **路径 B 健康自动导入**（有电脑时）：采用 HealthExport 实现方案——HealthExport App + iCloud 云盘自动导出健康 JSON → `parse_healthexport.py` 解析生成汇总 → 上传飞书云盘 → 豆包出日报。链路细节与保活检查见 [01-生活AI化/README.md](01-生活AI化/README.md)
-- **路径 C 无电脑**：手机文件主动发送给豆包 App → 解析后保存到飞书云盘
+- **路径 B 健康数据**：有电脑时用 HealthExport 实现方案自动导入（App + iCloud 自动导出 → AI 自动解析汇总 → 上传飞书云盘 → 豆包出日报）；没电脑时手动把健康数据文件 / 截图发给豆包 → 解析总结后同步到飞书云盘。链路细节与保活检查见 [01-生活AI化/README.md](01-生活AI化/README.md)
 
 **覆盖指标**：睡眠（阶段明细）、运动 Workouts、步数、活跃能量、心率（平均/最高/静息）。
 
 ### 快速开始
 
-```bash
-# 用脱敏示例数据跑通流程（仅需 Python 3，无第三方依赖）
-python "Practice/01-生活AI化/parse_healthexport.py" --sample
+把「一键提示词」复制给你的豆包，它会帮你把个人 AI 数据库搭起来（文件夹、日报模板、健康数据入口一次配齐）——提示词见 [01-生活AI化/README.md](01-生活AI化/README.md) 的「快速开始：一键提示词」。
 
-# 解析自己的 iCloud 健康数据（默认读取 iCloud 同步目录）
-python "Practice/01-生活AI化/parse_healthexport.py"
-
-# 自定义输入 / 输出目录
-python "Practice/01-生活AI化/parse_healthexport.py" --input "D:\HealthExport\Health" --output "D:\my-life\daily"
-```
-
-生成汇总后，把 Markdown 全文复制给豆包（prompt 模板见 `01-生活AI化/ai-daily-prompt.md`），即可得到今日健康日报。完整方案（三条路径、保活检查、飞书云盘数据库结构）见 [01-生活AI化/README.md](01-生活AI化/README.md)。
+之后你只需要做三件事：**吃饭拍照、随手记录、健康数据（自动或手动）进云盘**，其余解析、汇总、日报都由 AI 自动处理（脚本见 `01-生活AI化/parse_healthexport.py`，无需手动运行）。完整方案（两条路径、保活检查、飞书云盘数据库结构）见 [01-生活AI化/README.md](01-生活AI化/README.md)。
 
 ### 模块结构
 
 ```
 01-生活AI化/
-├── README.md                # 实现方法：三条数据入口、保活检查、云盘数据库结构
+├── README.md                # 实现方法：两条数据入口、保活检查、云盘数据库结构
 ├── parse_healthexport.py    # 解析脚本（HealthExport JSON → Markdown 汇总）
 ├── ai-daily-prompt.md       # 交给 AI 生成每日健康日报的 prompt 模板
 └── sample/                  # 脱敏示例数据（用于跑通流程）
@@ -80,7 +69,7 @@ python "Practice/01-生活AI化/parse_healthexport.py" --input "D:\HealthExport\
 ```
 ├── Practice/                        # 每个观点的实践模块（每个模块都有实现方法 README）
 │   ├── 01-生活AI化/                 # ✅ 已实现：豆包跨平台 + 飞书云盘个人 AI 数据库
-│   │   ├── README.md                # 实现方法：三条数据入口、保活检查、云盘数据库结构
+│   │   ├── README.md                # 实现方法：两条数据入口、保活检查、云盘数据库结构
 │   │   ├── parse_healthexport.py    # 解析脚本（HealthExport JSON → Markdown 汇总）
 │   │   ├── ai-daily-prompt.md       # 交给 AI 生成每日健康日报的 prompt 模板
 │   │   └── sample/                  # 脱敏示例数据（用于跑通流程）
