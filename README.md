@@ -7,22 +7,30 @@
 
 本项目素材来自孙宇晨（Justin Sun）与邵艾伦（Alan Shao）的一场 4 小时对谈（B 站 4h17m 完整版），由笔记仓库整理出 15 个核心观点。本仓库不重复讲故事，而是把观点逐个**实现为可运行的代码和可照做的流程**，每实现一个观点就沉淀一个可复用的实践模块。
 
-**当前进度**：观点 01「把生活 AI 化」已实现（健康数据自动导入 → AI 日报）。
+**当前进度**：观点 01「把生活 AI 化」已实现（`Practice/01-生活AI化`：豆包跨平台对话 + 飞书云盘存储，构建个人 AI 数据库）。
 
 ## 已实现：观点 01 把生活 AI 化
 
 > 对谈原话（约 00:01:57）：饭前饭后拍照、训练录视频、睡眠数据，全部交给 AI，每天出一份报告。**资料都存成文件，换工具也不丢。**
 
-方案参考飞书文档《健康数据自动导入说明（HealthExport 方案）》，落地为一条全自动链路：
+**实现方法**：利用豆包的跨平台对话能力（手机 / 电脑 / 网页）负责记录与分析，飞书云盘负责沉淀，构建个人 AI 数据库。数据入口分三条路径：
 
 ```
-iPhone 健康 App（Apple Watch 记录）
-  → HealthExport 每天后台自动导出 JSON → iCloud 云盘
-  → Windows iCloud 同步到本地目录
-  → parse_healthexport.py 解析（自动取最新文件）
-  → 生成「健康数据汇总_YYYY-MM-DD.md」
-  → 交给 AI 生成每日健康日报（prompt 模板见 ai-daily-prompt.md）
+                    ┌──────────── 豆包（跨平台对话）────────────┐
+ 路径A 拍照饮食 ────►│  手机端：拍照识别 / 上传文件 / 随时提问     │
+ 路径B 健康自动导入 ►│  电脑端：批量解析（parse_healthexport.py） │
+ 路径C 无电脑上传 ───►│  统一分析 → 生成日报 → 存入飞书云盘       │
+                    └──────────────────┬───────────────────────┘
+                                       ▼
+                    飞书云盘「个人 AI 数据库」
+                    ├── 收件箱/  待处理输入（照片、文件）
+                    ├── 素材/   已整理数据（健康汇总、饮食记录）
+                    └── 日报/   AI 生成的每日/每周报告
 ```
+
+- **路径 A 饮食**：豆包 App 拍照识别食物 → 记录存入飞书云盘素材
+- **路径 B 健康自动导入**（有电脑时）：HealthExport + iCloud 自动导出健康 JSON → `parse_healthexport.py` 解析生成汇总 → 上传飞书云盘 → 豆包出日报。方案参考飞书文档《健康数据自动导入说明（HealthExport 方案）》
+- **路径 C 无电脑**：手机文件主动发送给豆包 App → 解析后保存到飞书云盘
 
 **覆盖指标**：睡眠（阶段明细）、运动 Workouts、步数、活跃能量、心率（平均/最高/静息）。
 
@@ -30,26 +38,27 @@ iPhone 健康 App（Apple Watch 记录）
 
 ```bash
 # 用脱敏示例数据跑通流程（仅需 Python 3，无第三方依赖）
-python health/parse_healthexport.py --sample
+python "Practice/01-生活AI化/parse_healthexport.py" --sample
 
 # 解析自己的 iCloud 健康数据（默认读取 iCloud 同步目录）
-python health/parse_healthexport.py
+python "Practice/01-生活AI化/parse_healthexport.py"
 
 # 自定义输入 / 输出目录
-python health/parse_healthexport.py --input "D:\HealthExport\Health" --output "D:\my-life\daily"
+python "Practice/01-生活AI化/parse_healthexport.py" --input "D:\HealthExport\Health" --output "D:\my-life\daily"
 ```
 
-生成汇总后，把 Markdown 全文复制给任意 AI（模板见 `health/ai-daily-prompt.md`），即可得到今日健康日报。详细说明见 [`health/README.md`](health/README.md)。
+生成汇总后，把 Markdown 全文复制给豆包（prompt 模板见 `ai-daily-prompt.md`），即可得到今日健康日报。完整方案（三条路径、保活检查、飞书云盘数据库结构）见 [`Practice/01-生活AI化/README.md`](Practice/01-生活AI化/README.md)。
 
 ### 仓库结构
 
 ```
-├── health/                    # 观点 01：把生活 AI 化
-│   ├── README.md              # 方案说明：数据链路、保活检查、快速开始
-│   ├── parse_healthexport.py  # 解析脚本（HealthExport JSON → Markdown 汇总）
-│   ├── ai-daily-prompt.md     # 交给 AI 生成每日健康日报的 prompt 模板
-│   └── sample/                # 脱敏示例数据（用于跑通流程）
-├── .gitignore                 # 排除个人健康数据，保护隐私
+├── Practice/                   # 每个观点的实践模块
+│   └── 01-生活AI化/            # 观点 01：个人 AI 数据库
+│       ├── README.md           # 实现方法：豆包跨平台 + 飞书云盘 + 三条数据入口
+│       ├── parse_healthexport.py  # 解析脚本（HealthExport JSON → Markdown 汇总）
+│       ├── ai-daily-prompt.md  # 交给 AI 生成每日健康日报的 prompt 模板
+│       └── sample/             # 脱敏示例数据（用于跑通流程）
+├── .gitignore                  # 排除个人健康数据，保护隐私
 └── README.md
 ```
 
@@ -57,13 +66,13 @@ python health/parse_healthexport.py --input "D:\HealthExport\Health" --output "D
 
 | # | 观点 | 一句话做法 | 状态 |
 | --- | --- | --- | --- |
-| 01 | 把生活 AI 化 | 建文件夹，让 AI 每天写日报 | ✅ 已实现（health/） |
+| 01 | 把生活 AI 化 | 建文件夹，让 AI 每天写日报 | ✅ 已实现（Practice/01-生活AI化/） |
 | 02 | 没钱也能开始 | 用免费额度，把重复的事交给 AI | ⏳ 待实现 |
 | 03 | 先升级操作系统 | 写下看法，找资料验证 | ⏳ 待实现 |
 | 04 | 百分之百相信 AI | 同一问题问多个模型，挑最好的做 | ⏳ 待实现 |
 | 05 | 商机全球找 | 去海外论坛看你这行的人在抱怨什么 | ⏳ 待实现 |
 | 06 | 先探路，再下注 | 多找候选，先小实验再投入 | ⏳ 待实现 |
-| 07 | 身体是本钱 | 手环数据交给 AI 盯趋势 | ⏳ 待实现（可复用 health/） |
+| 07 | 身体是本钱 | 手环数据交给 AI 盯趋势 | ⏳ 待实现（可复用 01 数据） |
 | 08 | 逐水草而居 | 搞清楚机会大多在哪个城市 | ⏳ 待实现 |
 | 09 | 机器读得懂才值钱 | 常用资料转成 Markdown | ⏳ 待实现 |
 | 10 | 内容和投资不用二选一 | 分两个文件夹各记各的 | ⏳ 待实现 |
@@ -79,7 +88,7 @@ python health/parse_healthexport.py --input "D:\HealthExport\Health" --output "D
 | --- | --- | --- |
 | 对话视频（B 站，约 4h17m） | https://www.bilibili.com/video/BV1fcHD6cEw3/ | 看原话、定位讨论主题 |
 | 对谈笔记仓库 | https://github.com/wousp112/justin-sun-alan-shao-ai-notes | 全文逐字稿、精华、15 篇教程、AGENT.md |
-| 健康数据自动导入说明 | 飞书文档（HealthExport 方案） | 观点 01 的方案来源 |
+| 健康数据自动导入说明 | 飞书文档（HealthExport 方案） | 观点 01 路径 B 的方案来源 |
 
 ## 说明与免责声明
 

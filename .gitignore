@@ -1,7 +1,7 @@
 # 个人健康数据（隐私，勿提交）
-health/output/
-health/data/
-health/input/
+Practice/01-生活AI化/output/
+Practice/01-生活AI化/data/
+Practice/01-生活AI化/input/
 
 # Python
 __pycache__/
