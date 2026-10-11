@@ -1,0 +1,15 @@
+# 个人健康数据（隐私，勿提交）
+health/output/
+health/data/
+health/input/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# 系统 / 编辑器
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

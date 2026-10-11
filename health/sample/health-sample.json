@@ -1,0 +1,85 @@
+{
+  "date_range" : {
+    "end" : "2026-10-11T12:58:20Z",
+    "start" : "2026-09-11T12:58:20Z"
+  },
+  "export_date" : "2026-10-11T12:58:20Z",
+  "metrics" : {
+    "active_calories" : [
+      { "date" : "2026-10-05", "value" : 619 },
+      { "date" : "2026-10-06", "value" : 728 },
+      { "date" : "2026-10-07", "value" : 1191 },
+      { "date" : "2026-10-08", "value" : 1184 },
+      { "date" : "2026-10-09", "value" : 585 },
+      { "date" : "2026-10-10", "value" : 489 },
+      { "date" : "2026-10-11", "value" : 380 }
+    ],
+    "blood_pressure" : [],
+    "heart_rate" : [
+      { "date" : "2026-10-05", "average_bpm" : 85, "max_bpm" : 127, "resting_bpm" : 68 },
+      { "date" : "2026-10-06", "average_bpm" : 90, "max_bpm" : 152, "resting_bpm" : 67 },
+      { "date" : "2026-10-07", "average_bpm" : 87, "max_bpm" : 118, "resting_bpm" : 64 },
+      { "date" : "2026-10-08", "average_bpm" : 96, "max_bpm" : 170, "resting_bpm" : 72 },
+      { "date" : "2026-10-09", "average_bpm" : 72, "max_bpm" : 153, "resting_bpm" : 64 },
+      { "date" : "2026-10-10", "average_bpm" : 69, "max_bpm" : 137, "resting_bpm" : 60 },
+      { "date" : "2026-10-11", "average_bpm" : 84, "max_bpm" : 185, "resting_bpm" : 67 }
+    ],
+    "sleep" : [
+      {
+        "bed_end" : "2026-10-08T23:17:40Z",
+        "bed_start" : "2026-10-08T16:43:27Z",
+        "date" : "2026-10-09",
+        "stages" : { "awake_min" : 2, "core_min" : 229, "deep_min" : 44, "rem_min" : 109 }
+      },
+      {
+        "bed_end" : "2026-10-09T23:12:04Z",
+        "bed_start" : "2026-10-09T17:49:18Z",
+        "date" : "2026-10-10",
+        "stages" : { "awake_min" : 0, "core_min" : 184, "deep_min" : 47, "rem_min" : 78 }
+      },
+      {
+        "bed_end" : "2026-10-10T23:05:11Z",
+        "bed_start" : "2026-10-10T17:20:45Z",
+        "date" : "2026-10-11",
+        "stages" : { "awake_min" : 5, "core_min" : 210, "deep_min" : 52, "rem_min" : 85 }
+      }
+    ],
+    "steps" : [
+      { "date" : "2026-10-05", "value" : 11112 },
+      { "date" : "2026-10-06", "value" : 12103 },
+      { "date" : "2026-10-07", "value" : 12565 },
+      { "date" : "2026-10-08", "value" : 10146 },
+      { "date" : "2026-10-09", "value" : 7916 },
+      { "date" : "2026-10-10", "value" : 6029 },
+      { "date" : "2026-10-11", "value" : 7875 }
+    ],
+    "weight" : [],
+    "workouts" : [
+      {
+        "calories" : 220,
+        "date" : "2026-10-08",
+        "distance_km" : 8,
+        "duration_min" : 69.2,
+        "source" : "Example Watch",
+        "type" : "walking"
+      },
+      {
+        "calories" : 353,
+        "date" : "2026-10-09",
+        "distance_km" : 3.8,
+        "duration_min" : 145.7,
+        "source" : "Example Watch",
+        "type" : "walking"
+      },
+      {
+        "calories" : 324,
+        "date" : "2026-10-10",
+        "distance_km" : 3.1,
+        "duration_min" : 142,
+        "source" : "Example Watch",
+        "type" : "walking"
+      }
+    ]
+  },
+  "sync_type" : "sample"
+}
